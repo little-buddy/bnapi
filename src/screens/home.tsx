@@ -1,6 +1,6 @@
 import { useAsync } from 'react-use';
 
-import { Tab, Card, Tabs, Chip, Button, Spinner } from '@nextui-org/react';
+import { Tab, Card, Tabs, Chip, Spinner, Divider } from '@nextui-org/react';
 
 import type { SymbolInfo } from '../global';
 import type { QuoteType } from '../constants';
@@ -12,7 +12,7 @@ const Home = () => {
   const state = useAsync(async () => {
     const res = await getTradeInfo();
     res.symbols = res.symbols.filter(
-      symbol => true /*  symbol.status !== SymbolStatus.BREAK */
+      symbol => symbol.status !== SymbolStatus.BREAK
     );
     return res;
   }, []);
@@ -87,6 +87,22 @@ const Home = () => {
                     >
                       {symbol.symbol}
                     </Chip>
+
+                    <Divider className="my-2"></Divider>
+
+                    <div className=" flex space-x-2 flex-wrap">
+                      {symbol.icebergAllowed && <Chip size="sm">冰山挂单</Chip>}
+                      {symbol.ocoAllowed && <Chip size="sm">OCO挂单</Chip>}
+                      {symbol.isSpotTradingAllowed && (
+                        <Chip size="sm">现货交易</Chip>
+                      )}
+                      {symbol.isMarginTradingAllowed && (
+                        <Chip size="sm">杠杆交易</Chip>
+                      )}
+                    </div>
+
+                    <Divider className="my-2"></Divider>
+
                     <div className=" flex space-x-2 flex-wrap">
                       {symbol.orderTypes.map(orderType => (
                         <Chip size="sm">{OrderTypeTextMap[orderType]}</Chip>

@@ -4,6 +4,7 @@ import reactLogo from './assets/react.svg';
 
 import './App.css';
 
+// eslint-disable-next-line import/no-unresolved
 import viteLogo from '/vite.svg';
 
 function Home() {

@@ -21,12 +21,12 @@ export interface SymbolInfo {
   quoteCommissionPrecision: number;
   orderTypes: OrderType[] /* 支持交易类型 */;
   icebergAllowed: boolean /* 冰山订单 */;
-  ocoAllowd: boolean /* oco订单 */;
+  ocoAllowed: boolean /* oco订单 */;
   quoteOrderQtyMarketAllowed: boolean;
   allowTrailingStop: boolean;
   cancelReplaceAllowed: boolean;
-  isSpotTradingAllowed: boolean;
-  isMarginTradingAllowed: boolean;
+  isSpotTradingAllowed: boolean /* 现货交易 */;
+  isMarginTradingAllowed: boolean /* 杠杆交易 */;
   permissions: SymbolType[];
   defaultSelfTradePreventionMode: STPMode;
   allowSelfTradePreventionModes: STPMode[];
