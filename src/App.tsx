@@ -1,6 +1,6 @@
 import { NextUIProvider } from '@nextui-org/react';
 
-import Home from './home';
+import Home from './screens/home';
 
 import './App.css';
 
