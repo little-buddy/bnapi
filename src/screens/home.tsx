@@ -1,6 +1,14 @@
 import { useAsync } from 'react-use';
 
-import { Tab, Card, Tabs, Chip, Spinner, Divider } from '@nextui-org/react';
+import {
+  Tab,
+  Card,
+  Tabs,
+  Chip,
+  Image,
+  Spinner,
+  Divider,
+} from '@nextui-org/react';
 
 import type { SymbolInfo } from '../global';
 import type { QuoteType } from '../constants';
@@ -86,12 +94,16 @@ const Home = () => {
                       radius="sm"
                     >
                       <div className="flex">
-                        <img
-                          className="w-5 h-5 mr-2 bg-white rounded-full"
+                        <Image
+                          className="bg-white"
+                          width={20}
+                          height={20}
                           src={`/token-icons/${symbol.baseAsset}.png`}
+                          loading="lazy"
+                          radius="full"
                           alt=""
                         />
-                        {symbol.symbol}
+                        <span className="ml-2">{symbol.symbol}</span>
                       </div>
                     </Chip>
 
