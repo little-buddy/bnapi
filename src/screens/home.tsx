@@ -85,7 +85,14 @@ const Home = () => {
                       }
                       radius="sm"
                     >
-                      {symbol.symbol}
+                      <div className="flex">
+                        <img
+                          className="w-5 h-5 mr-2 bg-white rounded-full"
+                          src={`/token-icons/${symbol.baseAsset}.png`}
+                          alt=""
+                        />
+                        {symbol.symbol}
+                      </div>
                     </Chip>
 
                     <Divider className="my-2"></Divider>
