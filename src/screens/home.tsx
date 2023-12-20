@@ -107,7 +107,7 @@ const Home = () => {
                           loading="lazy"
                           radius="full"
                         />
-                        <span className="ml-2">{symbol.symbol}</span>
+                        <span className="ml-2">{symbol.baseAsset}</span>
                       </div>
                     </Chip>
 
