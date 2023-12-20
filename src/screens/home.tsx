@@ -86,7 +86,7 @@ const Home = () => {
               title={`${group.quote}币种(${group.data.length})`}
             >
               <div className=" grid grid-cols-6 gap-4">
-                {group.data.map((symbol: SymbolInfo) => (
+                {group.data.reverse().map((symbol: SymbolInfo) => (
                   <Card className="p-2" key={symbol.symbol}>
                     <Chip
                       color={
