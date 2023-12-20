@@ -1,6 +1,6 @@
 import { useAsync } from 'react-use';
 
-import { CurrencyDollarIcon } from '@heroicons/react/24/solid';
+import { Barbell, IceCream, Circuitry, Trademark } from '@phosphor-icons/react';
 import {
   Tab,
   Card,
@@ -9,6 +9,7 @@ import {
   Image,
   Spinner,
   Divider,
+  Tooltip,
 } from '@nextui-org/react';
 
 import type { SymbolInfo } from '../global';
@@ -132,14 +133,54 @@ const Home = () => {
 
                     <Divider className="my-2"></Divider>
 
-                    <div className=" flex space-x-2 flex-wrap">
-                      {symbol.icebergAllowed && <Chip size="sm">冰山挂单</Chip>}
-                      {symbol.ocoAllowed && <Chip size="sm">OCO挂单</Chip>}
+                    <div className=" flex space-x-2 justify-end">
+                      {symbol.icebergAllowed && (
+                        <Tooltip
+                          content="冰山挂单"
+                          closeDelay={0}
+                          placement="bottom"
+                        >
+                          <IceCream
+                            color="#f31260"
+                            size={16}
+                            weight="duotone"
+                          />
+                        </Tooltip>
+                      )}
+                      {symbol.ocoAllowed && (
+                        <Tooltip
+                          content="OCO挂单"
+                          closeDelay={0}
+                          placement="bottom"
+                        >
+                          <Circuitry
+                            color="#f31260"
+                            size={16}
+                            weight="duotone"
+                          />
+                        </Tooltip>
+                      )}
                       {symbol.isSpotTradingAllowed && (
-                        <Chip size="sm">现货交易</Chip>
+                        <Tooltip
+                          content="现货交易"
+                          closeDelay={0}
+                          placement="bottom"
+                        >
+                          <Trademark
+                            color="#f31260"
+                            size={16}
+                            weight="duotone"
+                          />
+                        </Tooltip>
                       )}
                       {symbol.isMarginTradingAllowed && (
-                        <Chip size="sm">杠杆交易</Chip>
+                        <Tooltip
+                          content="杠杆交易"
+                          closeDelay={0}
+                          placement="bottom"
+                        >
+                          <Barbell color="#f31260" size={16} weight="duotone" />
+                        </Tooltip>
                       )}
                     </div>
 
