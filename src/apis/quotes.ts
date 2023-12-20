@@ -194,7 +194,9 @@ interface ILatestPriceParams {
   symbols: string[];
 }
 
-export const getLatestPrice = (params: ILatestPriceParams) =>
+export const getLatestPrice = (
+  params?: ILatestPriceParams
+): Promise<Array<{ symbol: string; price: string }>> =>
   http.get(wrapperV3('ticker/price'), {
     params,
   });

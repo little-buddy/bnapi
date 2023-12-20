@@ -289,6 +289,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroicons/react@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@heroicons/react@npm:2.1.1"
+  peerDependencies:
+    react: ">= 16"
+  checksum: 5ba8add458d23f6bbb823d759181d1d7e70707d966ad14577e05bbeb17e383aef800e0df7a163f4a5ec7987dd5e9816cd5d9edc0d874984db34818600bfd5c9e
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -3451,6 +3460,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bnapi@workspace:."
   dependencies:
+    "@heroicons/react": ^2.1.1
     "@nextui-org/react": ^2.2.9
     "@types/react": ^18.2.43
     "@types/react-dom": ^18.2.17

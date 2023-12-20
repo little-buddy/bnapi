@@ -1,4 +1,4 @@
-export const DelayTime = (time = 2000) =>
+export const DelayTime = (time = 1000) =>
   new Promise(resolve => {
     setTimeout(resolve, time);
   });

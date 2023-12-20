@@ -1,5 +1,6 @@
 import { useAsync } from 'react-use';
 
+import { CurrencyDollarIcon } from '@heroicons/react/24/solid';
 import {
   Tab,
   Card,
@@ -13,19 +14,23 @@ import {
 import type { SymbolInfo } from '../global';
 import type { QuoteType } from '../constants';
 
-import { getTradeInfo } from '../apis';
+import { getTradeInfo, getLatestPrice } from '../apis';
 import { QuoteTypes, SymbolStatus, OrderTypeTextMap } from '../constants';
 
 const Home = () => {
   const state = useAsync(async () => {
-    const res = await getTradeInfo();
+    const [res, prices] = await Promise.all([getTradeInfo(), getLatestPrice()]);
     res.symbols = res.symbols.filter(
       symbol => symbol.status !== SymbolStatus.BREAK
     );
-    return res;
+    const symbolPrice: any = {};
+    prices.forEach(({ symbol, price }) => {
+      symbolPrice[symbol] = price;
+    });
+    return { ...res, symbolPrice };
   }, []);
 
-  const { symbols = [] } = state.value || {};
+  const { symbols = [], symbolPrice } = state.value || {};
 
   const others = new Set();
   const list: any = QuoteTypes.map(quote => {
@@ -101,11 +106,29 @@ const Home = () => {
                           src={`/token-icons/${symbol.baseAsset}.png`}
                           loading="lazy"
                           radius="full"
-                          alt=""
                         />
                         <span className="ml-2">{symbol.symbol}</span>
                       </div>
                     </Chip>
+
+                    <Divider className="my-2"></Divider>
+
+                    <div className="flex justify-end">
+                      <Chip size="sm" className=" bg-[#181a20]">
+                        <div className="flex items-center">
+                          <Image
+                            width={16}
+                            height={16}
+                            src={`/token-icons/${symbol.quoteAsset}.png`}
+                            loading="lazy"
+                            radius="full"
+                          ></Image>
+                          <span className=" ml-1 text-sm text-white">
+                            {+symbolPrice[symbol.symbol]}
+                          </span>
+                        </div>
+                      </Chip>
+                    </div>
 
                     <Divider className="my-2"></Divider>
 
