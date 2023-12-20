@@ -1,6 +1,7 @@
 import { useAsync } from 'react-use';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
+import classnames from 'classnames';
 import { Barbell, IceCream, Circuitry, Trademark } from '@phosphor-icons/react';
 import {
   Tab,
@@ -48,6 +49,137 @@ const useIntervalAsyncFn = (
   };
 
   return { do: fn, cancel };
+};
+
+const SymbolCard = ({
+  symbol,
+  price: _price,
+}: {
+  symbol: SymbolInfo;
+  price: string;
+}) => {
+  const [price, setPrice] = useState(_price || 0);
+  const [priceColor, setPriceColor] = useState(0);
+  const timer = useRef<number>();
+
+  const doBack = () => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+      timer.current = undefined;
+    }
+    timer.current = setTimeout(() => {
+      setPriceColor(0);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    if (_price === price) {
+      return;
+    }
+
+    if (+_price > +price) {
+      setPriceColor(1);
+    } else {
+      setPriceColor(-1);
+    }
+
+    setPrice(_price);
+  }, [_price, price]);
+
+  useEffect(() => {
+    if (priceColor !== 0) {
+      doBack();
+    }
+  }, [priceColor]);
+
+  return (
+    <Card className="p-2" key={symbol.symbol}>
+      <Chip
+        color={
+          symbol.status === SymbolStatus.TRADING
+            ? 'primary'
+            : symbol.status === SymbolStatus.BREAK
+              ? 'danger'
+              : 'warning'
+        }
+        radius="sm"
+      >
+        <div className="flex">
+          <Image
+            className="bg-white"
+            width={20}
+            height={20}
+            src={`/token-icons/${symbol.baseAsset}.png`}
+            loading="lazy"
+            radius="full"
+          />
+          <span className="ml-2">{symbol.baseAsset}</span>
+        </div>
+      </Chip>
+
+      <Divider className="my-2"></Divider>
+
+      <div className="flex justify-end">
+        <Chip size="sm" className=" bg-[#181a20]">
+          <div className="flex items-center">
+            <Image
+              width={16}
+              height={16}
+              src={`/token-icons/${symbol.quoteAsset}.png`}
+              loading="lazy"
+              radius="full"
+            ></Image>
+            <span
+              className={classnames(
+                'ml-1 text-sm text-white transition-all font-bold',
+                {
+                  '!text-[#0ECB81]': priceColor === 1,
+                  '!text-[#F6465D]': priceColor === -1,
+                }
+              )}
+            >
+              {+(price || 0)}
+            </span>
+          </div>
+        </Chip>
+      </div>
+
+      <Divider className="my-2"></Divider>
+
+      <div className=" flex space-x-2 justify-end">
+        {symbol.icebergAllowed && (
+          <Tooltip content="冰山挂单" closeDelay={0} placement="bottom">
+            <IceCream color="#f31260" size={16} weight="duotone" />
+          </Tooltip>
+        )}
+        {symbol.ocoAllowed && (
+          <Tooltip content="OCO挂单" closeDelay={0} placement="bottom">
+            <Circuitry color="#f31260" size={16} weight="duotone" />
+          </Tooltip>
+        )}
+        {symbol.isSpotTradingAllowed && (
+          <Tooltip content="现货交易" closeDelay={0} placement="bottom">
+            <Trademark color="#f31260" size={16} weight="duotone" />
+          </Tooltip>
+        )}
+        {symbol.isMarginTradingAllowed && (
+          <Tooltip content="杠杆交易" closeDelay={0} placement="bottom">
+            <Barbell color="#f31260" size={16} weight="duotone" />
+          </Tooltip>
+        )}
+      </div>
+
+      <Divider className="my-2"></Divider>
+
+      <div className=" flex space-x-2 flex-wrap">
+        {symbol.orderTypes.map(orderType => (
+          <Chip size="sm" key={orderType}>
+            {OrderTypeTextMap[orderType]}
+          </Chip>
+        ))}
+      </div>
+    </Card>
+  );
 };
 
 const Home = () => {
@@ -136,112 +268,10 @@ const Home = () => {
             >
               <div className=" grid grid-cols-6 gap-4">
                 {group.data.reverse().map((symbol: SymbolInfo) => (
-                  <Card className="p-2" key={symbol.symbol}>
-                    <Chip
-                      color={
-                        symbol.status === SymbolStatus.TRADING
-                          ? 'primary'
-                          : symbol.status === SymbolStatus.BREAK
-                            ? 'danger'
-                            : 'warning'
-                      }
-                      radius="sm"
-                    >
-                      <div className="flex">
-                        <Image
-                          className="bg-white"
-                          width={20}
-                          height={20}
-                          src={`/token-icons/${symbol.baseAsset}.png`}
-                          loading="lazy"
-                          radius="full"
-                        />
-                        <span className="ml-2">{symbol.baseAsset}</span>
-                      </div>
-                    </Chip>
-
-                    <Divider className="my-2"></Divider>
-
-                    <div className="flex justify-end">
-                      <Chip size="sm" className=" bg-[#181a20]">
-                        <div className="flex items-center">
-                          <Image
-                            width={16}
-                            height={16}
-                            src={`/token-icons/${symbol.quoteAsset}.png`}
-                            loading="lazy"
-                            radius="full"
-                          ></Image>
-                          <span className=" ml-1 text-sm text-white">
-                            {+(symbolPrices[symbol.symbol] || 0)}
-                          </span>
-                        </div>
-                      </Chip>
-                    </div>
-
-                    <Divider className="my-2"></Divider>
-
-                    <div className=" flex space-x-2 justify-end">
-                      {symbol.icebergAllowed && (
-                        <Tooltip
-                          content="冰山挂单"
-                          closeDelay={0}
-                          placement="bottom"
-                        >
-                          <IceCream
-                            color="#f31260"
-                            size={16}
-                            weight="duotone"
-                          />
-                        </Tooltip>
-                      )}
-                      {symbol.ocoAllowed && (
-                        <Tooltip
-                          content="OCO挂单"
-                          closeDelay={0}
-                          placement="bottom"
-                        >
-                          <Circuitry
-                            color="#f31260"
-                            size={16}
-                            weight="duotone"
-                          />
-                        </Tooltip>
-                      )}
-                      {symbol.isSpotTradingAllowed && (
-                        <Tooltip
-                          content="现货交易"
-                          closeDelay={0}
-                          placement="bottom"
-                        >
-                          <Trademark
-                            color="#f31260"
-                            size={16}
-                            weight="duotone"
-                          />
-                        </Tooltip>
-                      )}
-                      {symbol.isMarginTradingAllowed && (
-                        <Tooltip
-                          content="杠杆交易"
-                          closeDelay={0}
-                          placement="bottom"
-                        >
-                          <Barbell color="#f31260" size={16} weight="duotone" />
-                        </Tooltip>
-                      )}
-                    </div>
-
-                    <Divider className="my-2"></Divider>
-
-                    <div className=" flex space-x-2 flex-wrap">
-                      {symbol.orderTypes.map(orderType => (
-                        <Chip size="sm" key={orderType}>
-                          {OrderTypeTextMap[orderType]}
-                        </Chip>
-                      ))}
-                    </div>
-                  </Card>
+                  <SymbolCard
+                    symbol={symbol}
+                    price={symbolPrices[symbol.symbol] || '0'}
+                  ></SymbolCard>
                 ))}
               </div>
             </Tab>

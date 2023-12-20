@@ -3480,6 +3480,7 @@ __metadata:
     "@vitejs/plugin-react-swc": ^3.5.0
     autoprefixer: ^10.4.16
     axios: ^1.6.2
+    classnames: ^2.3.2
     eslint: ^8.55.0
     eslint-plugin-import: ^2.29.1
     eslint-plugin-perfectionist: ^2.5.0
@@ -3643,6 +3644,13 @@ __metadata:
   version: 2.0.0
   resolution: "chownr@npm:2.0.0"
   checksum: c57cf9dd0791e2f18a5ee9c1a299ae6e801ff58fee96dc8bfd0dcb4738a6ce58dd252a3605b1c93c6418fe4f9d5093b28ffbf4d66648cb2a9c67eaef9679be2f
+  languageName: node
+  linkType: hard
+
+"classnames@npm:^2.3.2":
+  version: 2.3.2
+  resolution: "classnames@npm:2.3.2"
+  checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
   languageName: node
   linkType: hard
 
