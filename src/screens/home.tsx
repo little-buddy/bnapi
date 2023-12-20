@@ -1,4 +1,5 @@
 import { useAsync } from 'react-use';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import { Barbell, IceCream, Circuitry, Trademark } from '@phosphor-icons/react';
 import {
@@ -18,20 +19,49 @@ import type { QuoteType } from '../constants';
 import { getTradeInfo, getLatestPrice } from '../apis';
 import { QuoteTypes, SymbolStatus, OrderTypeTextMap } from '../constants';
 
+const useIntervalAsyncFn = (
+  callback: (...args: any) => Promise<void>,
+  delay = 1000
+) => {
+  const timer = useRef<number>();
+  const isClear = useRef(false);
+
+  const fn = useCallback(async () => {
+    await callback();
+
+    if (isClear.current) {
+      isClear.current = false;
+      return;
+    }
+
+    timer.current = setTimeout(fn, delay);
+  }, [callback, delay]);
+
+  const cancel = () => {
+    console.log('cancel');
+    if (timer.current) {
+      clearTimeout(timer.current);
+      timer.current = undefined;
+    } else {
+      isClear.current = true;
+    }
+  };
+
+  return { do: fn, cancel };
+};
+
 const Home = () => {
+  const [symbolPrices, setSymbloPrices] = useState<Record<string, string>>({});
+
   const state = useAsync(async () => {
-    const [res, prices] = await Promise.all([getTradeInfo(), getLatestPrice()]);
+    const [res] = await Promise.all([getTradeInfo()]);
     res.symbols = res.symbols.filter(
       symbol => symbol.status !== SymbolStatus.BREAK
     );
-    const symbolPrice: any = {};
-    prices.forEach(({ symbol, price }) => {
-      symbolPrice[symbol] = price;
-    });
-    return { ...res, symbolPrice };
+    return res;
   }, []);
 
-  const { symbols = [], symbolPrice } = state.value || {};
+  const { symbols = [] } = state.value || {};
 
   const others = new Set();
   const list: any = QuoteTypes.map(quote => {
@@ -49,6 +79,19 @@ const Home = () => {
     };
   });
 
+  const intervalPrice = useIntervalAsyncFn(
+    useCallback(async () => {
+      const prices = await getLatestPrice();
+      // console.log(123);
+      const symbolPrice: any = {};
+      prices.forEach(({ symbol, price }) => {
+        symbolPrice[symbol] = price;
+      });
+      setSymbloPrices(symbolPrice);
+    }, [setSymbloPrices]),
+    5000
+  );
+
   list.push({
     quote: 'Other',
     data: [...others],
@@ -59,6 +102,11 @@ const Home = () => {
     uniq.add(symbol.baseAsset);
   });
   const assetsAmount = uniq.size;
+
+  useEffect(() => {
+    intervalPrice.do();
+    return intervalPrice.cancel;
+  }, []);
 
   if (state.loading) {
     return <Spinner></Spinner>;
@@ -125,7 +173,7 @@ const Home = () => {
                             radius="full"
                           ></Image>
                           <span className=" ml-1 text-sm text-white">
-                            {+symbolPrice[symbol.symbol]}
+                            {+(symbolPrices[symbol.symbol] || 0)}
                           </span>
                         </div>
                       </Chip>
@@ -188,7 +236,9 @@ const Home = () => {
 
                     <div className=" flex space-x-2 flex-wrap">
                       {symbol.orderTypes.map(orderType => (
-                        <Chip size="sm">{OrderTypeTextMap[orderType]}</Chip>
+                        <Chip size="sm" key={orderType}>
+                          {OrderTypeTextMap[orderType]}
+                        </Chip>
                       ))}
                     </div>
                   </Card>
