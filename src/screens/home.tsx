@@ -28,8 +28,11 @@ const useIntervalAsyncFn = (
   const isClear = useRef(false);
 
   const fn = useCallback(async () => {
-    await callback();
-
+    try {
+      await callback();
+    } catch (error) {
+      /*  */
+    }
     if (isClear.current) {
       isClear.current = false;
       return;
