@@ -18,7 +18,12 @@ import type { SymbolInfo } from '../global';
 import type { QuoteType } from '../constants';
 
 import { getTradeInfo, getLatestPrice } from '../apis';
-import { QuoteTypes, SymbolStatus, OrderTypeTextMap } from '../constants';
+import {
+  QuoteTypes,
+  SymbolStatus,
+  OrderTypeTextMap,
+  OrderTypeSmTextMap,
+} from '../constants';
 
 const useIntervalAsyncFn = (
   callback: (...args: any) => Promise<void>,
@@ -116,7 +121,7 @@ const SymbolCard = ({
             loading="lazy"
             radius="full"
           />
-          <span className="ml-2">{symbol.baseAsset}</span>
+          <span className="ml-2 font-bold">{symbol.baseAsset}</span>
         </div>
       </Chip>
 
@@ -150,35 +155,51 @@ const SymbolCard = ({
       <Divider className="my-2"></Divider>
 
       <div className=" flex space-x-2 justify-end">
-        {symbol.icebergAllowed && (
-          <Tooltip content="冰山挂单" closeDelay={0} placement="bottom">
-            <IceCream color="#f31260" size={16} weight="duotone" />
-          </Tooltip>
-        )}
-        {symbol.ocoAllowed && (
-          <Tooltip content="OCO挂单" closeDelay={0} placement="bottom">
-            <Circuitry color="#f31260" size={16} weight="duotone" />
-          </Tooltip>
-        )}
-        {symbol.isSpotTradingAllowed && (
-          <Tooltip content="现货交易" closeDelay={0} placement="bottom">
-            <Trademark color="#f31260" size={16} weight="duotone" />
-          </Tooltip>
-        )}
-        {symbol.isMarginTradingAllowed && (
-          <Tooltip content="杠杆交易" closeDelay={0} placement="bottom">
-            <Barbell color="#f31260" size={16} weight="duotone" />
-          </Tooltip>
-        )}
+        {[
+          { allowed: symbol.icebergAllowed, text: '冰山挂单', Icon: IceCream },
+          { allowed: symbol.ocoAllowed, text: 'OCO挂单', Icon: Circuitry },
+          {
+            allowed: symbol.isSpotTradingAllowed,
+            text: '现货交易',
+            Icon: Trademark,
+          },
+          {
+            allowed: symbol.isMarginTradingAllowed,
+            text: '杠杆交易',
+            Icon: Barbell,
+          },
+        ].map(({ allowed, Icon, text }) => {
+          return (
+            allowed && (
+              <Tooltip
+                content={text}
+                closeDelay={0}
+                placement="bottom"
+                key={text}
+                size="sm"
+              >
+                <Icon color="#f31260" size={16} weight="duotone" />
+              </Tooltip>
+            )
+          );
+        })}
       </div>
 
       <Divider className="my-2"></Divider>
 
-      <div className=" flex space-x-2 flex-wrap">
+      <div className=" flex justify-between">
         {symbol.orderTypes.map(orderType => (
-          <Chip size="sm" key={orderType}>
-            {OrderTypeTextMap[orderType]}
-          </Chip>
+          <Tooltip
+            content={OrderTypeTextMap[orderType]}
+            closeDelay={0}
+            placement="bottom"
+            size="sm"
+            key={orderType}
+          >
+            <span className=" cursor-default  text-[10px] text-white bg-[#181a20] px-1 rounded">
+              {OrderTypeSmTextMap[orderType]}
+            </span>
+          </Tooltip>
         ))}
       </div>
     </Card>
@@ -274,6 +295,7 @@ const Home = () => {
                   <SymbolCard
                     symbol={symbol}
                     price={symbolPrices[symbol.symbol] || '0'}
+                    key={symbol.symbol}
                   ></SymbolCard>
                 ))}
               </div>

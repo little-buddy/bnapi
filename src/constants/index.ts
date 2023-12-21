@@ -71,6 +71,16 @@ export const OrderTypeTextMap = {
   [OrderType.TAKE_PROFIT_LIMIT]: '限价止盈单',
 };
 
+export const OrderTypeSmTextMap = {
+  [OrderType.LIMIT]: '限',
+  [OrderType.LIMIT_MAKER]: '限只挂',
+  [OrderType.MARKET]: '市',
+  [OrderType.STOP_LOSS]: '止损',
+  [OrderType.STOP_LOSS_LIMIT]: '限止损',
+  [OrderType.TAKE_PROFIT]: '止盈',
+  [OrderType.TAKE_PROFIT_LIMIT]: '限止盈',
+};
+
 export enum OrderSide {
   BUY = 'BUY',
   SELL = 'SELL',
