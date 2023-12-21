@@ -17,6 +17,7 @@ import {
 import type { SymbolInfo } from '../global';
 import type { QuoteType } from '../constants';
 
+import { toFloatNum } from '../utils';
 import { getTradeInfo, getLatestPrice } from '../apis';
 import {
   QuoteTypes,
@@ -146,7 +147,7 @@ const SymbolCard = ({
                 }
               )}
             >
-              {+(price || 0)}
+              {toFloatNum((price || '0') as string)}
             </span>
           </div>
         </Chip>
