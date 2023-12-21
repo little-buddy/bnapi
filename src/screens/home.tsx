@@ -18,6 +18,8 @@ import type { SymbolInfo } from '../global';
 import type { QuoteType } from '../constants';
 
 import { toFloatNum } from '../utils';
+import SantaImg from '../assets/imgs/Santa.png';
+import CryptoAvatar from '../components/CryptoAvatar';
 import { getTradeInfo, getLatestPrice } from '../apis';
 import {
   QuoteTypes,
@@ -114,14 +116,8 @@ const SymbolCard = ({
         radius="sm"
       >
         <div className="flex">
-          <Image
-            className="bg-white"
-            width={20}
-            height={20}
-            src={`/token-icons/${symbol.baseAsset}.png`}
-            loading="lazy"
-            radius="full"
-          />
+          <CryptoAvatar crypto={symbol.baseAsset} merrychristmas></CryptoAvatar>
+
           <span className="ml-2 font-bold">{symbol.baseAsset}</span>
         </div>
       </Chip>
@@ -131,13 +127,8 @@ const SymbolCard = ({
       <div className="flex justify-end">
         <Chip size="sm" className=" bg-[#181a20]">
           <div className="flex items-center">
-            <Image
-              width={16}
-              height={16}
-              src={`/token-icons/${symbol.quoteAsset}.png`}
-              loading="lazy"
-              radius="full"
-            ></Image>
+            <CryptoAvatar crypto={symbol.quoteAsset} size={16}></CryptoAvatar>
+
             <span
               className={classnames(
                 'ml-1 text-sm text-white transition-all font-bold',
@@ -271,12 +262,20 @@ const Home = () => {
 
   return (
     <div className="conatiner space-y-4">
-      <div>Wellcome to binance api!</div>
+      <div className=" flex justify-between">
+        <div className=" flex text-white items-center">
+          <Image width={32} height={32} src="./binance.svg"></Image>
+          <span className=" ml-2 font-bold">币安现货交易对</span>
+        </div>
 
-      <Tabs aria-label="Options">
-        <Tab key="binance" title="Binance"></Tab>
-        <Tab key="okx" title="OKX"></Tab>
-      </Tabs>
+        <div className=" relative flex justify-center">
+          <Image width={120} height={120} src={SantaImg}></Image>
+          <span className=" absolute bottom-2 text-[#3d3d3d] flex justify-center text-center z-10 text-xs font-bold italic">
+            Merry
+            <br /> Christmas
+          </span>
+        </div>
+      </div>
 
       <div className="flex space-x-4">
         <Chip color="primary">{symbols.length} 个交易对</Chip>
